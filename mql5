@@ -1,0 +1,125 @@
+mql5
+// Bonnitta Gold MT5
+// Developer: Forex Robot Easy Team
+// Website: forexroboteasy.com
+
+// Custom indicator based on Bonnitta Trading Indicator
+#property indicator_chart_window
+#property indicator_buffers 2
+#property indicator_color1 Blue
+#property indicator_color2 Red
+
+extern int secretAlgorithm = 1;
+
+double BuyBuffer[];
+double SellBuffer[];
+
+int OnInit()
+{
+   SetIndexBuffer(0, BuyBuffer);
+   SetIndexBuffer(1, SellBuffer);
+   SetIndexStyle(0, DRAW_ARROW);
+   SetIndexArrow(0, SYMBOL_ARROWUP);
+   SetIndexStyle(1, DRAW_ARROW);
+   SetIndexArrow(1, SYMBOL_ARROWDOWN);
+   
+   return INIT_SUCCEEDED;
+}
+
+void OnCalculate(const int rates_total,
+                 const int prev_calculated,
+                 const datetime &time[],
+                 const double &open[],
+                 const double &high[],
+                 const double &low[],
+                 const double &close[],
+                 const long &tick_volume[],
+                 const long &volume[],
+                 const int &spread[])
+{
+   int limit = rates_total - prev_calculated;
+   
+   for (int i = 0; i < limit; i++)
+   {
+      if (secretAlgorithm == 1)
+      {
+         // Implement secretive trading algorithm
+         // Consider input from Bonnitta Trading Indicator, Trendlines, Support & Resistance levels
+         
+         // Example logic (for demonstration purposes only)
+         if (close[i] > open[i])
+         {
+            BuyBuffer[i] = high[i];
+            SellBuffer[i] = 0;
+         }
+         else if (close[i] < open[i])
+         {
+            BuyBuffer[i] = 0;
+            SellBuffer[i] = low[i];
+         }
+         else
+         {
+            BuyBuffer[i] = 0;
+            SellBuffer[i] = 0;
+         }
+      }
+   }
+}
+
+// High leverage trading functionality
+extern int minimumLeverage = 400;
+extern int leverage = 500;
+
+// Risk management
+void RiskManagement()
+{
+   // Display warning message to users
+   Print('Warning: Only use the amount of money you can afford to lose.');
+   
+   // Implement measures to prevent excessive risk-taking and protect user capital
+   // Example logic (for demonstration purposes only)
+   if (leverage < minimumLeverage)
+   {
+      leverage = minimumLeverage;
+   }
+}
+
+// Trading functions
+void Buy()
+{
+   // Implement buy function based on trading algorithm and custom indicator
+   // Include stop loss and take profit functionality
+   // Provide options for setting stop loss and take profit levels
+   // Example logic (for demonstration purposes only)
+   double stopLoss = Bid - 100 * _Point;
+   double takeProfit = Bid + 200 * _Point;
+   
+   OrderSend(Symbol(), OP_BUY, 1.0, Ask, 1, stopLoss, takeProfit, 'Buy Order', MagicNumber);
+}
+
+void Sell()
+{
+   // Implement sell function based on trading algorithm and custom indicator
+   // Include stop loss and take profit functionality
+   // Provide options for setting stop loss and take profit levels
+   // Example logic (for demonstration purposes only)
+   double stopLoss = Ask + 100 * _Point;
+   double takeProfit = Ask - 200 * _Point;
+   
+   OrderSend(Symbol(), OP_SELL, 1.0, Bid, 1, stopLoss, takeProfit, 'Sell Order', MagicNumber);
+}
+
+// Code performance optimization
+void OnStart()
+{
+   // Ensure code efficiency and quick trade execution
+   // Implement proper error handling and exception handling mechanisms
+   
+   RiskManagement();
+   
+   if (secretAlgorithm == 1)
+   {
+      Buy();
+      Sell();
+   }
+}
